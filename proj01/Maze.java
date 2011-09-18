@@ -9,6 +9,11 @@ public class Maze {
     //elements of init should have w characters. init should have only 1's
     //and 0's in it.
     boolean open;
+
+    width = w;
+    height = h;
+    cells = new Cell[w][h];
+
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
         open = (init[y].charAt(x) != '0');
@@ -18,6 +23,11 @@ public class Maze {
   }
 
   Maze (int w, int h) {
+
+    width = w;
+    height = h;
+    cells = new Cell[w][h];
+
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
         cells[x][y] = new Cell(x, y, true);
@@ -46,11 +56,11 @@ public class Maze {
   public String toString() {
     String result = new String("");
 
-    for (int x = 0; x < width; x++) {
-      for (int y = 0; y < height; y++) {
-         result += cells[x][y].toShortString();
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        result += cells[x][y].toShortString();
       }
-      if (x < width - 1) {
+      if (y < height - 1) {
         result += "\n";
       }
     }
