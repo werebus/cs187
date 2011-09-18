@@ -38,7 +38,7 @@ public class Cell {
   }
 
   public String coords() {
-    return "(" + Integer.toString(x) + ", " + Integer.toString(y) + ")"
+    return "(" + Integer.toString(x) + ", " + Integer.toString(y) + ")";
   }
 
   public String toString() {
