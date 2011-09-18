@@ -1,8 +1,26 @@
 public class Maze {
-  public int width;
-  public int height;
+  int width;
+  int height;
 
   Cell[][] cells;
+
+  public int getWidth() {
+    return width;
+  }
+
+  public void setWidth(int w) {
+    width = w;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void setHeight(int h) {
+    height = h;
+  }
+
+  //get/set Cells?
 
   public String toString() {
     String result = new String("");
@@ -12,7 +30,7 @@ public class Maze {
          result += cells[x][y].toShortString();
       }
       if (x < width - 1) {
-        result += "\r";
+        result += "\n";
       }
     }
 
