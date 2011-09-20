@@ -9,10 +9,12 @@ public class Cell {
     open = isOpen;
   }
 
+  //If the user doesn't specify, the Cell is open
   Cell (int xVal, int yVal) {
     this(xVal, yVal, true);
   }
 
+  //Getter / Setter boilerplate (blech)
   public int getX() {
     return x;
   }
@@ -37,10 +39,13 @@ public class Cell {
     open = isOpen;
   }
 
+  //Returns a string that represents the coordinates of this Cell in the
+  //form (x, y)  Public, but currently only called by toString()
   public String coords() {
     return "(" + Integer.toString(x) + ", " + Integer.toString(y) + ")";
   }
 
+  //A Cell's toString looks like '(x, y) open'
   public String toString() {
     if (open) {
       return coords() + " open";
@@ -49,6 +54,9 @@ public class Cell {
     }
   }
 
+  //Returns the string '0' or '1', representing whether the cell is open
+  //or not.  Used by the Maze class to output the status of each of its cells
+  //when calling Maze m.toString()
   public String toShortString() {
     if (open) {
       return "1";
@@ -56,5 +64,5 @@ public class Cell {
       return "0";
     }
   }
-  
+
 }
