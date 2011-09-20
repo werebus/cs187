@@ -66,16 +66,49 @@ public class MazeDriver {
 
     header("Creating a maze for testing 'moves'");
 
+      String r[] = {"1111", "1001", "1111"};
+      Maze mazeC = new Maze(4, 3, r);
+
+    header("Testing moves");
+
+      say("Moves at (0, 0) should be (1, 0) and (0, 1)");
+      for (Cell c : mazeC.moves(0, 0)) {
+        yell(c);
+      }
+
+      say("Moves at (1, 2) should be (0, 2) and (2, 2)");
+      for (Cell c : mazeC.moves(1, 2)) {
+        yell(c);
+      }
+
+      say("Moves at (0, 4) should throw an ArrayOutOfBounds exception");
+      try {
+        for (Cell c : mazeC.moves(0, 4)) {
+          yell(c);
+        }
+      } catch (ArrayIndexOutOfBoundsException e) {
+        error(e);
+      }
+
   }
 
+  //Covenience wrapper around System.out.println
   public static void say(Object statement) {
     System.out.println(statement);
   }
 
+  //Like say, but green (using ANSI codes - not very portable, but good enough
+  //for most non-Windows users.  Maybe look into jansi or Jcurses?
   public static void yell(Object statement) {
     System.out.println((char)27 + "[32m" + statement + (char)27 + "[39m");
   }
 
+  //Like say, but red
+  public static void error(Object statement) {
+    System.out.println((char)27 + "[31m" + statement + (char)27 + "[39m");
+  }
+
+  //Outputs a String "underlined" with ='s
   public static void header(Object statement) {
     say("\n" + statement);
     for (int i = 0; i < statement.toString().length(); i++) {
