@@ -4,7 +4,7 @@ public class Maze {
   int width;
   int height;
 
-  public SCell[][] cells;
+  SCell[][] cells;
 
   Maze (int w, int h, String[] init) {
     //TODO: Some error checking here. init should hava a size of h, and all
@@ -58,6 +58,10 @@ public class Maze {
     height = h;
   }
 
+  public SCell getCell(int x, int y) {
+    return cells[x][y];
+  }
+
   //get/set Cells?  Probably not; it would be one heck of a mess.
 
   //Returns an array of Cells that are adjacent to the coordinates specified
@@ -107,6 +111,8 @@ public class Maze {
 
     int count = 0;
 
+    //Look through all of the open cells from moves(x,y) and if it's not "seen",
+    //tack it onto the results array.
     for (int i = 0; i < possible.length; i++) {
       if (!possible[i].getSeen()) {
         count++;
@@ -118,6 +124,7 @@ public class Maze {
     return results;
   }
 
+  //Returns an array of cells 
   public SCell[] path(int sourceX, int sourceY, int destX, int destY) {
     Stack<SCell> search = new Stack<SCell>();
 

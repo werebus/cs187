@@ -31,7 +31,7 @@ public class MazeDriver {
         yell(c);
       }
       say("Marking (1,0) as 'seen'");
-      mc.cells[1][0].setSeen(true);
+      mc.getCell(1,0).setSeen(true);
       say("unseenMoves at 0,0 should now be only (0,1)");
      for (SCell c : mc.unseenMoves(0, 0))
        yell(c);
@@ -39,7 +39,7 @@ public class MazeDriver {
     header("Testing resetSeen()");
       mc.resetSeen();
       say("(1,0) should now be unseen (false)");
-      yell(mc.cells[1][0].getSeen());
+      yell(mc.getCell(1,0).getSeen());
 
     header("Testing path");
       String p[] = {"1111100111", "1000000101", "1011111110", "1111000101", "0001110000"};
