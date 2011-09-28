@@ -1,11 +1,10 @@
-//I hope this is OK.  It was the easiest way to resize the moves result.
-import java.util.Arrays;
+import java.util.*;
 
 public class Maze {
   int width;
   int height;
 
-  SCell[][] cells;
+  public SCell[][] cells;
 
   Maze (int w, int h, String[] init) {
     //TODO: Some error checking here. init should hava a size of h, and all
@@ -98,6 +97,66 @@ public class Maze {
     }
 
     return results;
+  }
+
+  //Returns an array of Cells that are adjacent to the coordinates specified,
+  //are open and unseen. 
+  public SCell[] unseenMoves(int x, int y) {
+    SCell[] results = new SCell[0];
+    SCell[] possible = moves(x, y);
+
+    int count = 0;
+
+    for (int i = 0; i < possible.length; i++) {
+      if (!possible[i].getSeen()) {
+        count++;
+        results = Arrays.copyOf(results, count);
+        results[count-1] = possible[i];
+      }
+    }
+
+    return results;
+  }
+
+  public SCell[] path(int sourceX, int sourceY, int destX, int destY) {
+    Stack<SCell> search = new Stack<SCell>();
+
+    //To start with, we'll have the source cell
+    search.push(cells[sourceX][sourceY]);
+    search.peek().setSeen(true);
+
+    //As long as there are any cells left on the stack:
+    while (!search.empty()) {
+
+      //Is the top of the stack our destination?
+      if (search.peek().getX() == destX && search.peek().getY() == destY)
+        break;
+
+      //Are there adjacent unseen cells?
+      if ( unseenMoves(search.peek().getX(), search.peek().getY()).length > 0 ) {
+        //Mark the first one we find as seen and push it onto the stack
+        search.push( unseenMoves(search.peek().getX(), search.peek().getY())[0] );
+        search.peek().setSeen(true);
+      } else {
+        search.pop();
+      }
+
+    }
+    //At this point, the stack is empty, or we found our path.
+    resetSeen();
+    SCell[] results = new SCell[search.size()];
+
+    for ( int i = search.size() - 1; i >= 0; i-- )
+      results[i] = search.pop();
+
+    return results;
+  }
+
+  //Reset all cells in the maze to "unseen"
+  public void resetSeen() {
+    for (int x = 0; x < width; x++)
+      for (int y = 0; y < height; y++)
+        cells[x][y].setSeen(false);
   }
 
   //A Maze's toString is a box made up of 1's and 0's representing the open
