@@ -1,5 +1,65 @@
 public class MazeDriver {
   public static void main(String[] args) {
+    header("Testing SCell constructors");
+
+      SCell a = new SCell(0,0);
+      say("Should be (0,0, open");
+      yell(a);
+
+      SCell b = new SCell(4,3,false);
+      say("Should be (4,3) closed");
+      yell(b);
+
+    header("Testing SCell get/set seen");
+
+      say("Should be false");
+      yell(a.getSeen());
+
+      a.setSeen(true);
+      say("Should be true");
+      yell(a.getSeen());
+
+    header("Creating a maze for testing 'moves'");
+
+      String r[] = {"1111", "1001", "1111"};
+      Maze mc = new Maze(4, 3, r);
+
+    header("Testing unseen moves");
+
+      say("unseenMoves at 0,0 should be (1,0), and (0,1)");
+      for (SCell c : mc.unseenMoves(0, 0)) {
+        yell(c);
+      }
+      say("Marking (1,0) as 'seen'");
+      mc.cells[1][0].setSeen(true);
+      say("unseenMoves at 0,0 should now be only (0,1)");
+     for (SCell c : mc.unseenMoves(0, 0))
+       yell(c);
+
+    header("Testing resetSeen()");
+      mc.resetSeen();
+      say("(1,0) should now be unseen (false)");
+      yell(mc.cells[1][0].getSeen());
+
+    header("Testing path");
+      String p[] = {"1111100111", "1000000101", "1011111110", "1111000101", "0001110000"};
+      Maze md = new Maze(10, 5, p);
+      yell(md);
+
+      say("From a cell to itself is a 1-move path");
+      yell(md.path(0,0,0,0).length + " moves");
+      for(SCell c : md.path(0,0,0,0))
+        yell(c);
+
+      say("No way from (0,0) to (5,0)");
+      yell(md.path(0,0,5,0).length + " moves");
+      for(SCell c : md.path(0,0,5,0))
+        yell(c);
+
+      say("Nice long path from (3,0) to (5,4)");
+      yell(md.path(3,0,5,4).length + " moves:");
+      for(SCell c : md.path(3,0,5,4))
+        yell("\t" + c);
 
   }
 
