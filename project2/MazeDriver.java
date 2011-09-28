@@ -64,6 +64,14 @@ public class MazeDriver {
       say("We can't start in a closed cell (0,4); should be 0 moves");
       yell(md.path(0,4,0,0).length + " moves");
 
+    header("Testing isPath");
+
+      say("Should be false for (0,0) to (9,3)");
+      yell(md.isPath(0,0,9,3));
+
+      say("Should be true for (2,3) to (8,2)");
+      yell(md.isPath(2,3,8,2));
+
   }
 
   //Covenience wrapper around System.out.println
