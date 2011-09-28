@@ -62,7 +62,7 @@ public class Maze {
     return cells[x][y];
   }
 
-  //get/set Cells?  Probably not; it would be one heck of a mess.
+  //set Cells?  Probably not; it would be one heck of a mess.
 
   //Returns an array of Cells that are adjacent to the coordinates specified
   //and are open.  Note that below I often check if we're ON the boundary of
@@ -124,13 +124,17 @@ public class Maze {
     return results;
   }
 
-  //Returns an array of cells 
+  //Returns an array of cells that you could travel through to get from
+  //(sourceX, sourceY) to (destX, destY).  It uses a stack of cells to
+  //assemble a path, but returns an array (dunno why, just 'cause)
   public SCell[] path(int sourceX, int sourceY, int destX, int destY) {
     Stack<SCell> search = new Stack<SCell>();
 
-    //To start with, we'll have the source cell
-    search.push(cells[sourceX][sourceY]);
-    search.peek().setSeen(true);
+    //To start with, we'll push the source cell on (if it's open. Otherwise, bail)
+    if ( cells[sourceX][sourceY].getOpen() ) {
+      search.push(cells[sourceX][sourceY]);
+      search.peek().setSeen(true);
+    }
 
     //As long as there are any cells left on the stack:
     while (!search.empty()) {
@@ -141,22 +145,31 @@ public class Maze {
 
       //Are there adjacent unseen cells?
       if ( unseenMoves(search.peek().getX(), search.peek().getY()).length > 0 ) {
-        //Mark the first one we find as seen and push it onto the stack
+        //Push the first one we find [UDLR] onto the stack and mark it as seen.
         search.push( unseenMoves(search.peek().getX(), search.peek().getY())[0] );
         search.peek().setSeen(true);
       } else {
+        //Back up one, there's nowhere else to go
         search.pop();
       }
 
-    }
+    } //-end while
+
     //At this point, the stack is empty, or we found our path.
     resetSeen();
     SCell[] results = new SCell[search.size()];
 
+    //Pop off all the cells and lay them in backwards into the array
     for ( int i = search.size() - 1; i >= 0; i-- )
       results[i] = search.pop();
 
     return results;
+  }
+
+  //Tells whether there is a path between two cells.  Takes the same arguments
+  //as path(...) above.
+  public boolean isPath(int sourceX, int sourceY, int destX, int destY) {
+    return (path(sourceX, sourceY, destX, destY).length > 0);
   }
 
   //Reset all cells in the maze to "unseen"

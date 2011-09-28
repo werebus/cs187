@@ -61,6 +61,9 @@ public class MazeDriver {
       for(SCell c : md.path(3,0,5,4))
         yell("\t" + c);
 
+      say("We can't start in a closed cell (0,4); should be 0 moves");
+      yell(md.path(0,4,0,0).length + " moves");
+
   }
 
   //Covenience wrapper around System.out.println
