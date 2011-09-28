@@ -5,7 +5,7 @@ public class Maze {
   int width;
   int height;
 
-  Cell[][] cells;
+  SCell[][] cells;
 
   Maze (int w, int h, String[] init) {
     //TODO: Some error checking here. init should hava a size of h, and all
@@ -15,12 +15,12 @@ public class Maze {
 
     width = w;
     height = h;
-    cells = new Cell[w][h];
+    cells = new SCell[w][h];
 
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
         open = (init[y].charAt(x) != '0');
-        cells[x][y] = new Cell(x, y, open);
+        cells[x][y] = new SCell(x, y, open);
       }
     }
   }
@@ -30,11 +30,11 @@ public class Maze {
 
     width = w;
     height = h;
-    cells = new Cell[w][h];
+    cells = new SCell[w][h];
 
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
-        cells[x][y] = new Cell(x, y, true);
+        cells[x][y] = new SCell(x, y, true);
       }
     }
   }
@@ -65,8 +65,8 @@ public class Maze {
   //and are open.  Note that below I often check if we're ON the boundary of
   //the maze rather than on or beyond it.  This is to allow requests _beyond_
   //the bounds of the maze to still raise an exception.
-  public Cell[] moves(int x, int y) {
-    Cell[] results = new Cell[0];
+  public SCell[] moves(int x, int y) {
+    SCell[] results = new SCell[0];
     int count = 0;
 
     //Check up
