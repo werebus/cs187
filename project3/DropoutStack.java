@@ -41,7 +41,10 @@ public class DropoutStack<T> {
     if (top == bottom) {
       stack[top] = null;
     } else {
-      top = (top - 1) % capacity;
+      //top = (top - 1) % capacity;  --Grrr.. if only % was actually modulo
+      top--;
+      if (top < 0)
+        top += capacity;
     }
 
     return result;
@@ -49,7 +52,7 @@ public class DropoutStack<T> {
 
   public T peek() throws EmptyCollectionException {
     if (isEmpty())
-      throw new EmptyCollectionException("DropooutStack");
+      throw new EmptyCollectionException("DropoutStack");
 
     T result = stack[top];
     return result;
@@ -71,17 +74,20 @@ public class DropoutStack<T> {
 
   public String toString() {
     int position = bottom;
-    String result = new String;
+    String result;
 
-    result =  "Size:   " + size() + "\n";
-    result += "Bottom: " + bottom + "\n";
-    result += "Top:    " + top + "\n\n";
+    result =  "Size:     " + size() + "\n";
+    result += "Capacity: " + capacity + "\n";
+    result += "Bottom:   " + bottom + "\n";
+    result += "Top:      " + top + "\n\n";
 
-    result += stack[position] + "\n";
+    if (!isEmpty())
+      result += stack[position] + "\n";
     while (position != top) {
       position = (position + 1) % capacity;
       result += stack[position] + "\n";
     }
 
     return result;
+  }
 }
