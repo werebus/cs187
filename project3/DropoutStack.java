@@ -116,4 +116,37 @@ public class DropoutStack<T> {
 
     return result;
   }
+
+  public void resize(int newCapacity) {
+    int currentPosition;
+    int counter = 0;
+    T[] oldStack = stack;
+    
+    stack = (T[])(new Object[newCapacity]);
+
+    if(newCapacity > size()) {
+      currentPosition = bottom;
+    } else {
+      currentPosition = (top - newCapacity + 1);
+      if (currentPosition < 0)
+        currentPosition += capacity;
+    }
+
+    do {
+      stack[counter] = oldStack[currentPosition];
+      counter++;
+      currentPosition = (currentPosition + 1) % capacity;
+    } while (currentPosition != top);
+
+    top = currentPosition;
+    bottom = 0;
+
+    while (counter < newCapacity) {
+      stack[counter] = null;
+      counter++;
+    }
+
+    capacity = newCapacity;
+
+  }
 }
