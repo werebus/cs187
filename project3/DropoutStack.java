@@ -26,6 +26,18 @@ public class DropoutStack<T> {
     stack = (T[])(new Object[DEFAULT_CAPACITY]);
   }
 
+  public int getCapacity() {
+    return capacity;
+  }
+
+  public int getTop() {
+    return top;
+  }
+
+  public int getBottom() {
+    return bottom;
+  }
+
   //Push an element onto the "top" of the stack.
   public void push (T element) {
     //if we're not empty, move some stuff around, otherwise top is where we 
@@ -117,36 +129,38 @@ public class DropoutStack<T> {
     return result;
   }
 
+  //resize the stack; actually, create a whole new one and copy all of the
+  //elements into it
   public void resize(int newCapacity) {
-    int currentPosition;
+    int position;
     int counter = 0;
-    T[] oldStack = stack;
-    
-    stack = (T[])(new Object[newCapacity]);
+    T[] newStack = (T[])(new Object[newCapacity]);
 
-    if(newCapacity > size()) {
-      currentPosition = bottom;
+    //Are we trying to resize to less than size?
+    if (newCapacity < size ()) {
+      //If so, start offset from the bottom by enough to allow as many of the 
+      //"newest" elements to fit as possible
+      position = (bottom + (size() - newCapacity)) % capacity;
     } else {
-      currentPosition = (top - newCapacity + 1);
-      if (currentPosition < 0)
-        currentPosition += capacity;
+      //Otherwise, we can start at the bottom.
+      position = bottom;
     }
 
-    do {
-      stack[counter] = oldStack[currentPosition];
+    //Populate the newStack with  old malking through from position to top
+    if (!isEmpty())
+      newStack[counter] = stack[position];
+    while (position != top) {
       counter++;
-      currentPosition = (currentPosition + 1) % capacity;
-    } while (currentPosition != top);
-
-    top = currentPosition;
-    bottom = 0;
-
-    while (counter < newCapacity) {
-      stack[counter] = null;
-      counter++;
+      position = (position + 1) % capacity;
+      newStack[counter] = stack[position];
     }
 
+    //New stack is now populated, replace the old.  Set capacity, bottom is
+    //always 0 on fresh arrays, top is however far we got.
+    stack = newStack;
     capacity = newCapacity;
+    bottom = 0;
+    top = counter;
 
   }
 }
