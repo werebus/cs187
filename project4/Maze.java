@@ -1,10 +1,10 @@
 import java.util.*;
 
 public class Maze {
-  int width;
-  int height;
+  private int width;
+  private int height;
 
-  SCell[][] cells;
+  private QCell[][] cells;
 
   Maze (int w, int h, String[] init) {
     //TODO: Some error checking here. init should hava a size of h, and all
@@ -14,12 +14,12 @@ public class Maze {
 
     width = w;
     height = h;
-    cells = new SCell[w][h];
+    cells = new QCell[w][h];
 
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
         open = (init[y].charAt(x) != '0');
-        cells[x][y] = new SCell(x, y, open);
+        cells[x][y] = new QCell(x, y, open);
       }
     }
   }
@@ -29,7 +29,7 @@ public class Maze {
 
     width = w;
     height = h;
-    cells = new SCell[w][h];
+    cells = new QCell[w][h];
 
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
@@ -58,7 +58,7 @@ public class Maze {
     height = h;
   }
 
-  public SCell getCell(int x, int y) {
+  public QCell getCell(int x, int y) {
     return cells[x][y];
   }
 
@@ -68,8 +68,8 @@ public class Maze {
   //and are open.  Note that below I often check if we're ON the boundary of
   //the maze rather than on or beyond it.  This is to allow requests _beyond_
   //the bounds of the maze to still raise an exception.
-  public SCell[] moves(int x, int y) {
-    SCell[] results = new SCell[0];
+  public QCell[] moves(int x, int y) {
+    QCell[] results = new QCell[0];
     int count = 0;
 
     //Check up
@@ -105,9 +105,9 @@ public class Maze {
 
   //Returns an array of Cells that are adjacent to the coordinates specified,
   //are open and unseen. 
-  public SCell[] unseenMoves(int x, int y) {
-    SCell[] results = new SCell[0];
-    SCell[] possible = moves(x, y);
+  public QCell[] unseenMoves(int x, int y) {
+    QCell[] results = new QCell[0];
+    QCell[] possible = moves(x, y);
 
     int count = 0;
 
@@ -128,42 +128,7 @@ public class Maze {
   //(sourceX, sourceY) to (destX, destY).  It uses a stack of cells to
   //assemble a path, but returns an array (dunno why, just 'cause)
   public SCell[] path(int sourceX, int sourceY, int destX, int destY) {
-    Stack<SCell> search = new Stack<SCell>();
-
-    //To start with, we'll push the source cell on (if it's open. Otherwise, bail)
-    if ( cells[sourceX][sourceY].getOpen() ) {
-      search.push(cells[sourceX][sourceY]);
-      search.peek().setSeen(true);
-    }
-
-    //As long as there are any cells left on the stack:
-    while (!search.empty()) {
-
-      //Is the top of the stack our destination?
-      if (search.peek().getX() == destX && search.peek().getY() == destY)
-        break;
-
-      //Are there adjacent unseen cells?
-      if ( unseenMoves(search.peek().getX(), search.peek().getY()).length > 0 ) {
-        //Push the first one we find [UDLR] onto the stack and mark it as seen.
-        search.push( unseenMoves(search.peek().getX(), search.peek().getY())[0] );
-        search.peek().setSeen(true);
-      } else {
-        //Back up one, there's nowhere else to go
-        search.pop();
-      }
-
-    } //-end while
-
-    //At this point, the stack is empty, or we found our path.
-    resetSeen();
-    SCell[] results = new SCell[search.size()];
-
-    //Pop off all the cells and lay them in backwards into the array
-    for ( int i = search.size() - 1; i >= 0; i-- )
-      results[i] = search.pop();
-
-    return results;
+    //TODO
   }
 
   //Tells whether there is a path between two cells.  Takes the same arguments
@@ -173,10 +138,14 @@ public class Maze {
   }
 
   //Reset all cells in the maze to "unseen"
-  public void resetSeen() {
-    for (int x = 0; x < width; x++)
-      for (int y = 0; y < height; y++)
+  public void resetCells() {
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
         cells[x][y].setSeen(false);
+        cells[x][y].setDistance(0);
+        //TODO set parent?
+      }
+    }
   }
 
   //A Maze's toString is a box made up of 1's and 0's representing the open
