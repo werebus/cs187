@@ -20,4 +20,12 @@ public class QCell extends SCell {
     distance = newDist;
   }
 
+  public QCell getParent() {
+    return parent;
+  }
+
+  public void setParent(QCell newParent){
+    parent = newParent;
+  }
+
 }

@@ -33,7 +33,7 @@ public class Maze {
 
     for (int y = 0; y < h; y++) {
       for (int x = 0; x < w; x++) {
-        cells[x][y] = new SCell(x, y, true);
+        cells[x][y] = new QCell(x, y, true);
       }
     }
   }
@@ -127,8 +127,51 @@ public class Maze {
   //Returns an array of cells that you could travel through to get from
   //(sourceX, sourceY) to (destX, destY).  It uses a stack of cells to
   //assemble a path, but returns an array (dunno why, just 'cause)
-  public SCell[] path(int sourceX, int sourceY, int destX, int destY) {
-    //TODO
+  public QCell[] path(int sourceX, int sourceY, int destX, int destY) {
+    Queue<QCell> search = new ArrayDeque();
+    QCell[] foundPath = new QCell[0];
+    
+    //To start with, we'll add the source cell (if it's open. Otherwise, bail)
+    if ( cells[sourceX][sourceY].getOpen() ) {
+      search.add(cells[sourceX][sourceY]);
+      search.element().setSeen(true);
+    }
+
+    //while we still have something in the queue
+    while (!search.isEmpty()) {
+
+      //Place all of the unseen moves for the front of the queue in the queue
+      for (QCell move : unseenMoves( search.element().getX(), search.element().getY() ) ) {
+        move.setDistance(search.element().getDistance() + 1);
+        move.setParent(search.element());
+        move.setSeen(true);
+
+        search.add(move);
+      }
+
+      //If the front of the queue happens to be the destination, lets get out of here
+      if (search.element().getX() == destX && search.element().getY() == destY) break;
+
+      //Remove the next element
+      search.remove();
+    }
+
+    //Two choices here: the queue is empty, so there's no path, or the front of
+    //the queue is our destination.
+    if (!search.isEmpty()) {
+      foundPath = new QCell[search.element().getDistance() + 1];
+      QCell result = search.element();
+
+      //Pop off all the cells and lay them in backwards into the array
+      for ( int i = result.getDistance(); i >= 0; i-- ) {
+        foundPath[i] = result;
+        result = result.getParent();
+      }
+    }
+
+    resetCells();
+    return foundPath;
+
   }
 
   //Tells whether there is a path between two cells.  Takes the same arguments
@@ -143,7 +186,7 @@ public class Maze {
       for (int y = 0; y < height; y++) {
         cells[x][y].setSeen(false);
         cells[x][y].setDistance(0);
-        //TODO set parent?
+        cells[x][y].setParent(null);
       }
     }
   }
