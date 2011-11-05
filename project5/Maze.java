@@ -131,7 +131,7 @@ public class Maze {
   public PQCell[] path(int sourceX, int sourceY, int destX, int destY) {
     Queue<PQCell> search = new ArrayDeque();
     PQCell[] foundPath = new PQCell[0];
-    
+
     //To start with, we'll add the source cell (if it's open. Otherwise, bail)
     if ( cells[sourceX][sourceY].getOpen() ) {
       search.add(cells[sourceX][sourceY]);
@@ -175,8 +175,12 @@ public class Maze {
 
   }
 
+  //Returns the best posible route in terms of most spoons returned.  The result is
+  //packed into a Hashtable with one entry.  Said entry has a key of the path array,
+  //and a value of the number of spoons that you get to keep.  This method is called
+  //by bestPath() and spoons() below.
   public Hashtable<PQCell[],Integer> bestPathHash(int startSpoons, int sourceX, int sourceY, int destX, int destY) {
-    Hashtable<PQCell[],Integer> pathHash = new Hashtable(1);
+    Hashtable<PQCell[],Integer> pathHash = new Hashtable(1); //this will end up being the return value
     PriorityQueue<PQCell> search = new PriorityQueue();
     PQCell[] foundPath = new PQCell[0];
     PQCell best = new PQCell(-1, -1, false);
@@ -191,18 +195,19 @@ public class Maze {
     //while we still have something in the queue and "best" isn't our destination
     while (!( search.isEmpty() || (best.getXCoord() == destX && best.getYCoord() == destY) )) {
 
-      //Place all of the unseen moves for the best cell in the list
+      //Remove the best cell and set it to "seen"
       best = search.poll();
       best.setSeen(true);
 
       for (PQCell move : unseenMoves( best.getXCoord(), best.getYCoord() ) ) {
 
+        //How many spoons would this move cost us?
         if (move.getIsTown())
           spoonTemp = (int)(best.getSpoons() * 0.95);
         else
           spoonTemp = best.getSpoons() - 1;
 
-        //If this move isn't yet on the queue, or if we can get there with more spoons
+        //Unless this move isn't yet on the queue, or if we can get there with more spoons...
         if (!search.contains(move) || spoonTemp > move.getSpoons()) {
           move.setDistance(best.getDistance() + 1);
           move.setParent(best);
@@ -213,8 +218,7 @@ public class Maze {
       }
     }
 
-    //Two choices here: the queue is empty, so there's no path, or the best cell
-    //is our destination.
+    //Is best our destination?  did it yield positive spoons?
     if ( best.getXCoord() == destX && best.getYCoord() == destY && best.getSpoons() > 0) {
       foundPath = new PQCell[best.getDistance() + 1];
       PQCell result = best;
@@ -226,16 +230,19 @@ public class Maze {
       }
     }
 
+    //Pack into the hash
     pathHash.put(foundPath, ( best.getSpoons() > 0 ? best.getSpoons() : 0 ));
     resetCells();
     return pathHash;
 
   }
 
+  //Return the key of bestPathHash[0], an array of PQCells in order
   public PQCell[] bestPath(int startSpoons, int sourceX, int sourceY, int destX, int destY) {
     return bestPathHash(startSpoons, sourceX, sourceY, destX, destY).keys().nextElement();
   }
 
+  //Return the value of bestPathHash[0] an Integer (unpacked into an int)
   public int spoons(int startSpoons, int sourceX, int sourceY, int destX, int destY) {
     return bestPathHash(startSpoons, sourceX, sourceY, destX, destY).elements().nextElement();
   }
