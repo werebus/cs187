@@ -180,6 +180,7 @@ public class Maze {
     PriorityQueue<PQCell> search = new PriorityQueue();
     PQCell[] foundPath = new PQCell[0];
     PQCell best = new PQCell(-1, -1, false);
+    int spoonTemp = 0;
 
     //To start with, we'll add the source cell (if it's open. Otherwise, bail)
     if ( cells[sourceX][sourceY].getOpen() ) {
@@ -195,14 +196,20 @@ public class Maze {
       best.setSeen(true);
 
       for (PQCell move : unseenMoves( best.getXCoord(), best.getYCoord() ) ) {
-        move.setDistance(best.getDistance() + 1);
-        move.setParent(best);
-        if (move.getIsTown())
-          move.setSpoons( (int)(best.getSpoons() * 0.95) );
-        else
-          move.setSpoons( best.getSpoons() - 1 );
 
-        search.add(move);
+        if (move.getIsTown())
+          spoonTemp = (int)(best.getSpoons() * 0.95);
+        else
+          spoonTemp = best.getSpoons() - 1;
+
+        //If this move isn't yet on the queue, or if we can get there with more spoons
+        if (!search.contains(move) || spoonTemp > move.getSpoons()) {
+          move.setDistance(best.getDistance() + 1);
+          move.setParent(best);
+          move.setSpoons(spoonTemp);
+
+          search.add(move);
+        }
       }
     }
 
