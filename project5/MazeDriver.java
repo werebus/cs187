@@ -71,18 +71,26 @@ public class MazeDriver {
       say("(0,2),(0,1),(1,1),(2,1),(3,1),(3,2)");
       for(PQCell c : mbp.bestPath(10, 0, 2, 3, 2))
         yell("\t" + c);
+      yell(mbp.spoons(10,0,2,3,2) + " spoons");
 
       say("Starting with 100 spoons, best path from (0,2) to (3,2) should be");
       say("(0,2),(0,1),(0,0),(1,0),(2,0),(3,0),(3,1),(3,2)");
       for(PQCell c : mbp.bestPath(100, 0, 2, 3, 2))
         yell("\t" + c);
+      yell(mbp.spoons(100,0,2,3,2) + " spoons");
 
       say("Starting with 2 spoons, you can't get there without running out");
       yell(mbp.bestPath(2, 0, 2, 3, 2).length + " moves");
+      yell(mbp.spoons(2,0,2,3,2) + " spoons");
 
       say("Starting with 2 spoons, you run out exactly trying to get from");
       say("(0,2) to (0,0)");
       yell(mbp.bestPath(2, 0, 2, 0, 0).length + " moves");
+
+      say("Going from 1 Town to another with 200 spoons should cost 10 (leaving 190)");
+      for(PQCell c : mbp.bestPath(200, 1,1,2,1))
+        yell("\t" + c);
+      yell(mbp.spoons(200,1,1,2,1) + " spoons");
   }
 
   //Covenience wrapper around System.out.println

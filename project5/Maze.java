@@ -175,7 +175,8 @@ public class Maze {
 
   }
 
-  public PQCell[] bestPath(int startSpoons, int sourceX, int sourceY, int destX, int destY) {
+  public Hashtable<PQCell[],Integer> bestPathHash(int startSpoons, int sourceX, int sourceY, int destX, int destY) {
+    Hashtable<PQCell[],Integer> pathHash = new Hashtable(1);
     PriorityQueue<PQCell> search = new PriorityQueue();
     PQCell[] foundPath = new PQCell[0];
     PQCell best = new PQCell(-1, -1, false);
@@ -218,13 +219,18 @@ public class Maze {
       }
     }
 
+    pathHash.put(foundPath, ( best.getSpoons() > 0 ? best.getSpoons() : 0 ));
     resetCells();
-    return foundPath;
+    return pathHash;
 
   }
 
-  public int spoons(int startSpoons, int sx, int xy, int dx, int dy) {
-    return 0;
+  public PQCell[] bestPath(int startSpoons, int sourceX, int sourceY, int destX, int destY) {
+    return bestPathHash(startSpoons, sourceX, sourceY, destX, destY).keys().nextElement();
+  }
+
+  public int spoons(int startSpoons, int sourceX, int sourceY, int destX, int destY) {
+    return bestPathHash(startSpoons, sourceX, sourceY, destX, destY).elements().nextElement();
   }
 
   //Tells whether there is a path between two cells.  Takes the same arguments
@@ -233,7 +239,7 @@ public class Maze {
     return (path(sourceX, sourceY, destX, destY).length > 0);
   }
 
-  //Reset all cells in the maze to "unseen"
+  //Reset all cells in the maze to "unseen", 0 distance, 0 spoons, no parent
   public void resetCells() {
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
