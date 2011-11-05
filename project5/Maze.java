@@ -187,7 +187,7 @@ public class Maze {
     int spoonTemp = 0;
 
     //To start with, we'll add the source cell (if it's open. Otherwise, bail)
-    if ( cells[sourceX][sourceY].getOpen() ) {
+    if ( cells[sourceX][sourceY].getOpen() && cells[destX][destY].getOpen() ) {
       search.add(cells[sourceX][sourceY]);
       cells[sourceX][sourceY].setSpoons(startSpoons);
     }
