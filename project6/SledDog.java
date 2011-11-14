@@ -11,6 +11,15 @@ public class SledDog extends Dog implements Comparable<SledDog> {
    public void setTeamNumber(int newTeamNumber) {teamNumber = newTeamNumber;}
 
    public int compareTo (SledDog other) {
-      // to be written by student, this is a stub to allow compilation
-      return 0;}
+     // If they have the same name, compare team numbers, otherwise compare names
+     if ( getName().equals( other.getName() ) ) {
+       return (new Integer(getTeamNumber()).compareTo( new Integer(other.getTeamNumber()) ) );
+     } else {
+       return getName().compareTo( other.getName() );
+     }
+   }
+
+   public String toString() {
+     return getName() + ": " + getAge() + "-year-old " + getBreed() + " on team " + getTeamNumber();
+   }
 }

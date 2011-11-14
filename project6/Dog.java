@@ -1,3 +1,4 @@
+//Dog class provided by DMB
 public class Dog {
    protected String name;
    protected int age;
