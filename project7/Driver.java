@@ -63,6 +63,18 @@ public class Driver {
       for (String s : l.list("25***"))
         yell(s);
 
+      header("Testing scrabbleword");
+        ScrabbleWord swa = new ScrabbleWord("jazzy", 33);
+        ScrabbleWord swb = new ScrabbleWord("trees", 5);
+        say("Testing getWord, shoud be 'jazzy'");
+        yell(swa.getWord());
+        say("Testing getScore, should be 33");
+        yell(swa.getScore());
+        say("Testing toString");
+        yell(swb);
+        say("jazzy.compareTo(trees) should be <0");
+        yell(swa.compareTo(swb));
+
   }
 
   //Covenience wrapper around System.out.println

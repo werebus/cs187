@@ -66,6 +66,8 @@ public class PhonewordLister {
 
   public String[] list(String digits){
     Queue<String> search = new ArrayDeque();
+    PriorityQueue<ScrabbleWord> sort = new PriorityQueue();
+    String word;
     Pattern invalid = Pattern.compile("[^2-9*]");
     Matcher invalidMatch = invalid.matcher(digits);
 
@@ -85,11 +87,15 @@ public class PhonewordLister {
         }
     }
 
-    //TODO: Not yet in order:
-    String[] result = new String[search.size()];
+    while (!search.isEmpty()){
+      word = search.remove();
+      sort.add( new ScrabbleWord(word, scrabbleScore(word)) );
+    }
+
+    String[] result = new String[sort.size()];
     int count = 0;
-    while (!search.isEmpty())
-      result[count++] = search.remove();
+    while (!sort.isEmpty())
+      result[count++] = sort.remove().getWord();
 
     return result;
 
