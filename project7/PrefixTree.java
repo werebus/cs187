@@ -18,7 +18,14 @@ public class PrefixTree {
     root = new PTNode ("");
   }
 
-  public void addString(String w){ // stub, to be written by student
-  // add new nodes to calling tree, for w and any of its prefixes that are new
+  public void addString(String w){
+    PTNode current = root;
+
+    for (int i = 0; i < w.length(); i++) {
+      if (current.getChild(w.charAt(i)) == null)
+        current.setChild(w.charAt(i), w.substring(0, i+1));
+
+      current = current.getChild(w.charAt(i));
+    }
   }
 }
