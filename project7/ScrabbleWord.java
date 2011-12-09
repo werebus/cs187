@@ -25,6 +25,9 @@ public class ScrabbleWord implements Comparable<ScrabbleWord>{
     score = s;
   }
 
+  //Conveniently, Integers already have a compareTo() method.  Box the two
+  //scores up into Integers and compare them.  Of course, for Integers, lower
+  //is "better"; multiply by -1 to switch it around.
   public int compareTo(ScrabbleWord other){
     return (new Integer(score).compareTo(new Integer(other.score)))*-1;
   }

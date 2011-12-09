@@ -1,3 +1,4 @@
+//Class unmodified (except for whitespace) as provided by DMB
 public class PTNode {
   private String elem;
   private PTNode [ ] child = new PTNode [26];

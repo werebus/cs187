@@ -3,32 +3,43 @@ import java.util.*;
 import java.util.regex.*;
 
 public class PhonewordLister {
+  //Constant that holds the default filename for the word lsit
   private static final String DEFAULT_FILENAME = "sgb-words.txt";
+
+  //The actual prefix tree
   private PrefixTree tree;
 
   public PrefixTree getTree(){
     return tree;
   }
 
+  //zero-parameter constructor calls 1-parameter version with the default
+  //file name
   public PhonewordLister() throws IOException {
     this(DEFAULT_FILENAME);
   }
 
+  //Create a new PhoneWordLister.  This is where the text file gets read in
   public PhonewordLister(String fileName) throws IOException {
     tree = new PrefixTree();
 
+    //Reader based on the textfile
     BufferedReader in = new BufferedReader( new FileReader( fileName ) );
+    //line hold the most recently read-in line
     String line;
 
+    //While we continue to succeed at reading in a new line, add that line
+    //(one of our words) into the prefix tree.
     while ( (line = in.readLine()) != null ) {
       tree.addString(line);
     }
 
+    //Close up the file
     in.close();
   }
 
-  public static int scrabbleScore (String w) {
   // returns Scrabble score if w is made only of letters, returns 0 otherwise
+  public static int scrabbleScore (String w) {
     int [ ] value = {1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3,
                      1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10};
     int sum = 0;
@@ -44,6 +55,9 @@ public class PhonewordLister {
     return sum;
   }
 
+  // returns an array of possible phoneletterchars given a char digit.  THat is,
+  // 2 -> [a, b, c], etc.  '*' returns the entire alphabet, anything non-valid
+  // returns an empty char array.
   public static char[] phoneLetters( char digit ) {
     char[] result;
     switch (digit) {
@@ -64,21 +78,40 @@ public class PhonewordLister {
     return result;
   }
 
+  //Lists all possible phonewords for a given string of digits in descending
+  //order of Scrabble score.
   public String[] list(String digits){
+    //This queue holds the initial search; we do a bredth-first search of
+    //the prefix tree for all valid words
     Queue<String> search = new ArrayDeque();
+
+    //Priority queue for the ScrabbleWords
     PriorityQueue<ScrabbleWord> sort = new PriorityQueue();
+
+    //Temporary holder
     String word;
+
+    //Set up a regex for invalid characters (not 2-9 or *).
     Pattern invalid = Pattern.compile("[^2-9*]");
     Matcher invalidMatch = invalid.matcher(digits);
 
+    //If this isn't a 5-character string, or it contains any invalid characters,
+    //bail early (return an empty array).
     if (digits.length() != 5 || invalidMatch.find() )
       return new String[0];
 
+    //Put each of the possible letters for the first digit in the search queue,
+    //presuming they are in the prefix tree (if they're not, there are no words
+    //that start with them)
     for ( char first : phoneLetters(digits.charAt(0)) )
       if (tree.contains( Character.toString( first ) )){
         search.add( Character.toString( first ) );
       }
 
+    //While the head of the queue is not a five letter word, we still have
+    //combinations to try.  Take the head off the queue, and add the concat of
+    //it and each of possible letters for digit[x] (where x is the length of the
+    //prefix) to the queue if that combination is itself in the prefix tree.
     while (search.peek().length() != 5) {
       String prefix = search.remove();
       for ( char next : phoneLetters(digits.charAt( prefix.length() ) ) )
@@ -87,25 +120,21 @@ public class PhonewordLister {
         }
     }
 
+    //Now, search should be full of found 5-letter words only.  Take them out
+    //of the queue in turn and add them to a priority queue (with it's Scrabble
+    //score).
     while (!search.isEmpty()){
       word = search.remove();
       sort.add( new ScrabbleWord(word, scrabbleScore(word)) );
     }
 
+    //Form a result array, and pull everything out of the priority queue in
+    //turn and place it in the array.
     String[] result = new String[sort.size()];
     int count = 0;
     while (!sort.isEmpty())
       result[count++] = sort.remove().getWord();
 
     return result;
-
-
   }
-    //  This is the key method to be written by the student.
-    //  The input "digits" is to be a string of five characters, each a digit in the range 2-9 or a *.
-    //  If it is of this form, return an array of all phonewords that can be made from the input,
-    //  in order of Scrabble score with highest score first, treating a * as a wild-card.  (Handling *'s is extra credit.)
-    //  If the input is invalid, return an array of length 0. 
-
-
 }
