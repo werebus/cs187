@@ -27,5 +27,18 @@ public class PrefixTree {
 
       current = current.getChild(w.charAt(i));
     }
+    size++;
+  }
+
+  public boolean contains(String w){
+    PTNode current = root;
+
+    for (int i = 0; i < w.length(); i++) {
+      if (current.getChild(w.charAt(i)) == null)
+        return false;
+
+      current = current.getChild(w.charAt(i));
+    }
+    return true;
   }
 }

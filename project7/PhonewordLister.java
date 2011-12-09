@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class PhonewordLister {
+  private static final String DEFAULT_FILENAME = "sgb-words.txt";
   private PrefixTree tree;
 
   public PrefixTree getTree(){
@@ -9,7 +10,13 @@ public class PhonewordLister {
   }
 
   public PhonewordLister() throws IOException {
-    BufferedReader in = new BufferedReader( new FileReader("sgb-words.txt") );
+    this(DEFAULT_FILENAME);
+  }
+
+  public PhonewordLister(String fileName) throws IOException {
+    tree = new PrefixTree();
+
+    BufferedReader in = new BufferedReader( new FileReader( fileName ) );
     String line;
 
     while ( (line = in.readLine()) != null ) {
