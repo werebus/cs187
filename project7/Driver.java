@@ -36,8 +36,32 @@ public class Driver {
       yell("hippo: " + t.contains("hippo"));
       say("'lazed' should be true");
       yell("lazed: " + t.contains("lazed"));
+      say("'ab' should be true");
+      yell("ab: " + t.contains("ab"));
       say("'pinot' should be false");
       yell("pinot: " + t.contains("pinot"));
+
+    header("Testing phoneletter map");
+      char[] digits = new char[] {'2', '3', '4', '5', '6', '7', '8', '9', '*'};
+      for (char d : digits) {
+        say(d);
+        yell(PhonewordLister.phoneLetters(d).length);
+        for (char p : PhonewordLister.phoneLetters(d)) {
+          yell("\t" + p);
+        }
+      }
+
+    header("Testing list method");
+      say("A non-5-character string should return an empty array");
+      yell(l.list("234").length);
+      say("Invalid characters, likewise");
+      yell(l.list("3452a").length);
+      say("22222 has only one valid word");
+      for (String s : l.list("22222"))
+        yell(s);
+      say("25*** should be a pretty big list");
+      for (String s : l.list("25***"))
+        yell(s);
 
   }
 

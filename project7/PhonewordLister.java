@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.regex.*;
 
 public class PhonewordLister {
   private static final String DEFAULT_FILENAME = "sgb-words.txt";
@@ -43,8 +44,56 @@ public class PhonewordLister {
     return sum;
   }
 
+  public static char[] phoneLetters( char digit ) {
+    char[] result;
+    switch (digit) {
+      case '2': result = new char[] {'a', 'b', 'c'}; break;
+      case '3': result = new char[] {'d', 'e', 'f'}; break;
+      case '4': result = new char[] {'g', 'h', 'i'}; break;
+      case '5': result = new char[] {'j', 'k', 'l'}; break;
+      case '6': result = new char[] {'m', 'n', 'o'}; break;
+      case '7': result = new char[] {'p', 'q', 'r', 's'}; break;
+      case '8': result = new char[] {'t', 'u', 'v'}; break;
+      case '9': result = new char[] {'w', 'x', 'y', 'z'}; break;
+      case '*': result = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+                                     'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
+                                     's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}; break;
+      default: result = new char[0];
+    }
+
+    return result;
+  }
+
   public String[] list(String digits){
-    return new String[0];
+    Queue<String> search = new ArrayDeque();
+    Pattern invalid = Pattern.compile("[^2-9*]");
+    Matcher invalidMatch = invalid.matcher(digits);
+
+    if (digits.length() != 5 || invalidMatch.find() )
+      return new String[0];
+
+    for ( char first : phoneLetters(digits.charAt(0)) )
+      if (tree.contains( Character.toString( first ) )){
+        search.add( Character.toString( first ) );
+      }
+
+    while (search.peek().length() != 5) {
+      String prefix = search.remove();
+      for ( char next : phoneLetters(digits.charAt( prefix.length() ) ) )
+        if (tree.contains( prefix + Character.toString( next ) )){
+          search.add( prefix + Character.toString( next ) );
+        }
+    }
+
+    //TODO: Not yet in order:
+    String[] result = new String[search.size()];
+    int count = 0;
+    while (!search.isEmpty())
+      result[count++] = search.remove();
+
+    return result;
+
+
   }
     //  This is the key method to be written by the student.
     //  The input "digits" is to be a string of five characters, each a digit in the range 2-9 or a *.
