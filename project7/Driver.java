@@ -62,6 +62,9 @@ public class Driver {
       say("25*** should be a pretty big list");
       for (String s : l.list("25***"))
         yell(s);
+      say("26*29 apparently fails");
+      for (String s : l.list("26*29"))
+        yell(s);
 
       header("Testing scrabbleword");
         ScrabbleWord swa = new ScrabbleWord("jazzy", 33);
